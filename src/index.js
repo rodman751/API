@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use(require('../routes/Rindex'));
+app.use(require('../routes/Ringre'));
 
 
 //Server execution
