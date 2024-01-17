@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 //routes
 app.use(require('../routes/Rindex'));
 app.use(require('../routes/Ringre'));
+app.use(require('../routes/pizza_ingredients.routes'));
 
 
 //Server execution

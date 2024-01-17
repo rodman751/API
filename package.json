@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/index.js",
-    "test": "echo \"Esto es una prueba de scripst\" && exit 1"
+    "test": "echo \"Esto es una prueba de scripst\" && exit 1",
+    "dev": "nodemon ./src/index.js"
   },
   "author": "Rodmansito",
   "license": "ISC",
