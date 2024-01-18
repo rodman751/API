@@ -5,7 +5,7 @@ const getPizzas = async (req, res) => {
     res.json(response);
 };
 const crearPizza = async (req, res) => {
-    const { piz_name, piz_origin } = req.query;
+    const { piz_name, piz_origin } = req.body;
     const response = await db.any(
         `INSERT INTO public.pizzas(piz_name, piz_origin, piz_state) VALUES ($1, $2, true) RETURNING *;`,
         [piz_name, piz_origin]
@@ -13,21 +13,16 @@ const crearPizza = async (req, res) => {
 
     console.log(response);
 
-    res.json({
-        message: 'created',
-        body: {
-            pizza: {
-                piz_name,
-                piz_origin,
-            },
-        },
-    });
+    res.json(response);
 };
 const eliminarPizza = async (req, res) => {
-    const { piz_id } = req.query;
-    const response = await db.any(`DELETE FROM pizzas
+    const { piz_id } = req.params;
+
+    const response1 = await db.any(`DELETE FROM pizzas_ingredients
 	WHERE piz_id=$1;`, [piz_id]);
-    console.log(response);
+    const response2 = await db.any(`DELETE FROM pizzas
+	WHERE piz_id=$1;`, [piz_id]);
+    console.log(response2);
 
     res.json({
         message: 'borrado',
@@ -40,7 +35,8 @@ const eliminarPizza = async (req, res) => {
 };
 
 const editarPizza = async (req, res) => {
-    const { piz_id, piz_name, piz_origin, piz_state } = req.query;
+    const { piz_id } = req.params;
+    const { piz_name, piz_origin, piz_state } = req.body;
     const response = await db.any(`
         UPDATE pizzas
         SET piz_name=$2, piz_origin=$3, piz_state=$4

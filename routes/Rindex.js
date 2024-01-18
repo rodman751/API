@@ -4,6 +4,6 @@ const { getPizzas, crearPizza, eliminarPizza, editarPizza } = require('../contro
 
 router.get('/pizzas', getPizzas);
 router.post('/pizzas', crearPizza);
-router.post('/borrar', eliminarPizza);
-router.post('/update', editarPizza);
+router.delete('/borrar/:piz_id', eliminarPizza);
+router.post('/update/:piz_id', editarPizza);
 module.exports = router;
