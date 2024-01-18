@@ -1,0 +1,5 @@
+# Ignorar directorio node_modules
+node_modules/
+
+# Ignorar archivo conexion.js en la carpeta config
+config/coneccion.js
