@@ -12,10 +12,10 @@ const getIngredients = async (req, res) => {
 
 const createIngredient = async (req, res) => {
     try {
-        const { ing_name, ing_calories } = req.query;
+        const { ing_name, ing_calories ,ing_state} = req.body;
         const response = await db.one(
-            `INSERT INTO ingredients(ing_name, ing_calories, ing_state) VALUES ($1, $2, true) RETURNING *;`,
-            [ing_name, ing_calories]
+            `INSERT INTO ingredients(ing_name, ing_calories, ing_state) VALUES ($1, $2, $3) RETURNING *;`,
+            [ing_name, ing_calories, ing_state]
         );
 
         console.log(response);
@@ -37,7 +37,12 @@ const createIngredient = async (req, res) => {
 
 const deleteIngredient = async (req, res) => {
     try {
-        const { ing_id } = req.query;
+        const { ing_id } = req.params;
+
+        // Eliminar referencias en pizzas_ingredients
+        await db.none(`DELETE FROM pizzas_ingredients WHERE ing_id = $1;`, [ing_id]);
+
+        // Eliminar el ingrediente
         const response = await db.result(`DELETE FROM ingredients WHERE ing_id=$1;`, [ing_id]);
 
         console.log(response);
@@ -52,13 +57,15 @@ const deleteIngredient = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error asd' });
     }
 };
 
+
 const updateIngredient = async (req, res) => {
     try {
-        const { ing_id, ing_name, ing_calories, ing_state } = req.query;
+        const { ing_id, ing_name, ing_calories, ing_state } = req.body;
+        console.log(ing_id, ing_name, ing_calories, ing_state);
         const response = await db.one(`
             UPDATE ingredients
             SET ing_name=$2, ing_calories=$3, ing_state=$4
