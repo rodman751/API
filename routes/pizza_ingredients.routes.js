@@ -12,7 +12,7 @@ const {
 router.get('/pizzaIngredients', getPizzaIngredients);
 router.get('/pizzaIngredientsbyid', getPizzaIngredientById);
 router.post('/crearPizza', createPizzaIngredient);
-router.post('/eliminarPizza', deletePizzaIngredientById);
+router.delete('/eliminarPizza/:pi_id', deletePizzaIngredientById);
 router.post('/editarPizza', updatePizzaIngredient);
 
 module.exports = router;

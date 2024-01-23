@@ -153,7 +153,7 @@ const updatePizzaIngredient = async (req, res) => {
 
 const deletePizzaIngredientById = async (req, res) => {
     try {
-        const { pi_id } = req.query;
+        const { pi_id } = req.params;
 
         // Verifica que el campo requerido no sea nulo antes de la eliminación
         if (!pi_id) {
