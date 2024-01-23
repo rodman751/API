@@ -29,14 +29,31 @@ const getPizzaIngredients = async (req, res) => {
 
 const createPizzaIngredient = async (req, res) => {
     try {
-        const { piz_id, ing_id, pi_portion } = req.query;
+        const { piz_name, piz_origin, piz_state, ing_name, ing_calories, ing_state, pi_portion } = req.body;
 
         // Verifica que los campos requeridos no sean nulos antes de la inserción
-        if (!piz_id || !ing_id || !pi_portion) {
-            return res.status(400).json({ error: 'Los campos piz_id, ing_id y pi_portion son obligatorios.' });
+        if (!piz_name || !piz_origin || piz_state === undefined || !ing_name || ing_calories === undefined || ing_state === undefined || !pi_portion) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
         }
 
-        const response = await db.any(
+        // Insertar datos en la tabla 'pizzas'
+        const pizzaResponse = await db.one(
+            'INSERT INTO public.pizzas(piz_name, piz_origin, piz_state) VALUES ($1, $2, $3) RETURNING piz_id;',
+            [piz_name, piz_origin, piz_state]
+        );
+
+        const piz_id = pizzaResponse.piz_id;
+
+        // Insertar datos en la tabla 'ingredients'
+        const ingredientResponse = await db.one(
+            'INSERT INTO public.ingredients(ing_name, ing_calories, ing_state) VALUES ($1, $2, $3) RETURNING ing_id;',
+            [ing_name, ing_calories, ing_state]
+        );
+
+        const ing_id = ingredientResponse.ing_id;
+
+        // Insertar datos en la tabla 'pizzas_ingredients'
+        const response = await db.one(
             'INSERT INTO public.pizzas_ingredients(pi_id, piz_id, ing_id, pi_portion) VALUES (DEFAULT, $1, $2, $3) RETURNING *;',
             [piz_id, ing_id, pi_portion]
         );
@@ -48,6 +65,7 @@ const createPizzaIngredient = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 
 // READ (Obtener todos los registros)
