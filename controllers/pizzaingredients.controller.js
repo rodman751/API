@@ -114,25 +114,41 @@ const getPizzaIngredientById = async (req, res) => {
 
 const updatePizzaIngredient = async (req, res) => {
     try {
-        const { pi_id, piz_id, ing_id, pi_portion } = req.query;
+        const { pi_id, piz_name, piz_origin, piz_state, ing_name, ing_calories, ing_state, pi_portion } = req.body;
 
         // Verifica que los campos requeridos no sean nulos antes de la actualización
-        if (!pi_id || !piz_id || !ing_id || !pi_portion) {
-            return res.status(400).json({ error: 'Los campos pi_id, piz_id, ing_id y pi_portion son obligatorios.' });
+        if (!pi_id || !piz_name || !piz_origin || piz_state === undefined || !ing_name || ing_calories === undefined || ing_state === undefined || !pi_portion) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
         }
 
-        const updatedPizzaIngredient = await db.one(
-            'UPDATE public.pizzas_ingredients SET piz_id = $1, ing_id = $2, pi_portion = $3 WHERE pi_id = $4 RETURNING *',
-            [piz_id, ing_id, pi_portion, pi_id]
+        // Actualizar datos en la tabla 'pizzas'
+        await db.none(
+            'UPDATE public.pizzas SET piz_name = $2, piz_origin = $3, piz_state = $4 WHERE piz_id = $1;',
+            [pi_id, piz_name, piz_origin, piz_state]
         );
 
-        console.log(updatedPizzaIngredient);
-        res.json(updatedPizzaIngredient);
+        // Actualizar datos en la tabla 'ingredients'
+        await db.none(
+            'UPDATE public.ingredients SET ing_name = $2, ing_calories = $3, ing_state = $4 WHERE ing_id = $1;',
+            [pi_id, ing_name, ing_calories, ing_state]
+        );
+
+        // Actualizar datos en la tabla 'pizzas_ingredients'
+        const updatedResponse = await db.one(
+            'UPDATE public.pizzas_ingredients SET pi_portion = $2 WHERE pi_id = $1 RETURNING *;',
+            [pi_id, pi_portion]
+        );
+
+        console.log(updatedResponse);
+        res.json(updatedResponse);
     } catch (error) {
         console.error('Error updating pizza ingredient:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
+
 
 
 const deletePizzaIngredientById = async (req, res) => {
