@@ -5,9 +5,13 @@ const getPizzaIngredients = async (req, res) => {
         const response = await db.any(`
         SELECT
         pi.pi_id,
+        pi.pi_portion,
         p.piz_name,
+        p.piz_origin,
+        p.piz_state,
         i.ing_name,
-        pi.pi_portion
+        i.ing_calories,
+        i.ing_state
     FROM
         public.pizzas_ingredients pi
     JOIN
