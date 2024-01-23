@@ -9,7 +9,7 @@ const {
 
 router.get('/ingredients', getIngredients);
 router.post('/ingredients', createIngredient);
-router.post('/deleteIngredient', deleteIngredient);
+router.delete('/deleteIngredient/:ing_id', deleteIngredient);
 router.post('/updateIngredient', updateIngredient);
 
 module.exports = router;
